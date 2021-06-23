@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<extension type="plugin" version="3.9" method="upgrade" group="system">
+    <name>System - WT SEO Meta templates - JoomShopping</name>
+    <author>Sergey Tolkachyov</author>
+    <authorEmail>info@web-tolk.ru</authorEmail>
+    <authorUrl>https://web-tolk.ru/</authorUrl>
+	<creationDate>14/05/2021</creationDate>
+    <copyright>Sergey Tolkachyov</copyright>
+    <license>GNU General Public License v3.0</license>
+    <version>1.0.0</version>
+    <description>JoomShopping plugin for WT SEO Meta templates</description>
+    <files>
+        <filename plugin="wt_seo_meta_templates_joomshopping">wt_seo_meta_templates_joomshopping.php</filename>
+        <folder>language</folder>
+        <folder>fields</folder>
+    </files>
+	<languages folder="language" client="administrator">
+        <language tag="en-GB">en-GB/en-GB.plg_system_wt_seo_meta_templates_joomshopping.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.plg_system_wt_seo_meta_templates_joomshopping.ini</language>
+        <language tag="en-GB">en-GB/en-GB.plg_system_wt_seo_meta_templates_joomshopping.sys.ini</language>
+        <language tag="ru-RU">ru-RU/ru-RU.plg_system_wt_seo_meta_templates_joomshopping.sys.ini</language>
+    </languages>
+       <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field addfieldpath="plugins/system/wt_seo_meta_templates_joomshopping/fields" type="plugininfo" name="plugininfo"/>
+                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DESCRIPTION"/>
+                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CATEGORIES_HEADER"/>
+                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CATEGORIES_TITLE_HEADER"/>
+<!--                joomshopping Category-->
+                <field type="radio"
+                       name="global_jshop_category_title_replace"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_CATEGORY_TITLE_REPLACE"
+                       class="btn-group btn-group-yesno"
+                       default="0">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field type="radio"
+                       name="global_jshop_category_title_replace_only_empty"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_CATEGORY_TITLE_REPLACE_ONLY_EMPTY"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       showon="global_jshop_category_title_replace:1">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field type="textarea"
+                       name="joomshopping_category_title_template"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_CATEGORY_TITLE_TEMPLATE"
+                       rows="3"
+                       class="span8"
+                       showon="global_jshop_category_title_replace:1"/>
+                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CATEGORIES_META_DESCRIPTION_HEADER"/>
+                <field type="radio"
+                       name="global_jshop_category_description_replace"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_CATEGORY_DESCRIPTION_REPLACE"
+                       class="btn-group btn-group-yesno"
+                       default="0">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field type="radio"
+                       name="global_jshop_category_description_replace_only_empty"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_CATEGORY_DESCRIPTION_REPLACE_ONLY_EMPTY"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       showon="global_jshop_category_description_replace:1">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field type="textarea"
+                       name="joomshopping_category_meta_description_template"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_CATEGORY_META_DESCRIPTION_TEMPLATE"
+                       rows="3"
+                       class="span8"
+                       showon="global_jshop_category_description_replace:1"/>
+<!--                joomshopping Product-->
+                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_HEADER"/>
+                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_TITLE_HEADER"/>
+                <field type="radio"
+                       name="global_jshop_product_title_replace"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_PRODUCT_TITLE_REPLACE"
+                       class="btn-group btn-group-yesno"
+                       default="0">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field type="radio"
+                       name="global_jshop_product_title_replace_only_empty"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_PRODUCT_TITLE_REPLACE_ONLY_EMPTY"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       showon="global_jshop_product_title_replace:1">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field type="textarea"
+                       name="joomshopping_product_title_template"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_PRODUCT_TITLE_TEMPLATE"
+                       rows="3"
+                       class="span8"
+                       showon="global_jshop_product_title_replace:1"/>
+                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_META_DESCRIPTION_HEADER"/>
+                <field type="radio"
+                       name="global_jshop_product_meta_description_replace"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_PRODUCT_META_DESCRIPTION_REPLACE"
+                       class="btn-group btn-group-yesno"
+                       default="0">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field type="radio"
+                       name="global_jshop_product_meta_description_replace_only_empty"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_PRODUCT_META_DESCRIPTION_REPLACE_ONLY_EMPTY"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       showon="global_jshop_product_meta_description_replace:1">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field type="textarea"
+                       name="joomshopping_product_meta_description_template"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_PRODUCT_META_DESCRIPTION_TEMPLATE"
+                       rows="3"
+                       class="span8"
+                       showon="global_jshop_product_meta_description_replace:1"/>
+                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_SHOW_DEBUG_HEADER"/>
+                <field type="radio"
+                       name="show_debug"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_SHOW_DEBUG"
+                       class="btn-group btn-group-yesno"
+                       default="0">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+            <fieldset name="wt_seo_meta_templates_joomshopping">
+                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_PRODUCT_VARIABLES"/>
+                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_CATEGORY_VARIABLES"/>
+
+            </fieldset>
+        </fields>
+    </config>
+	<updateservers>
+        <server type="extension" name="WebTolkUpdateServer">https://web-tolk.ru/component/swjprojects/jupdate.html?element=wt_seo_meta_templates_joomshopping</server>
+    </updateservers>
+</extension>
