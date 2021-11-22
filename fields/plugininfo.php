@@ -1,7 +1,6 @@
 <?php
 /**
- * @package     WT SEO Meta Templates
- * @subpackage  WT SEO Meta Templates Virtuemart
+ * @package     WebTolk plugin info field
  * @version     1.0.0
  * @Author 		Sergey Tolkachyov, https://web-tolk.ru
  * @copyright   Copyright (C) 2020 Sergey Tolkachyov
@@ -16,6 +15,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Language\Text;
 use \Joomla\CMS\Factory;
+use Joomla\Registry\Registry;
 FormHelper::loadFieldClass('spacer');
 
 class JFormFieldPlugininfo extends JFormFieldSpacer
@@ -43,27 +43,49 @@ class JFormFieldPlugininfo extends JFormFieldSpacer
 	 */
 	protected function getLabel()
 	{
-		$info="";
+		$data = $this->form->getData();
+		$element = 	$data->get('element');
+		$folder = 	$data->get('folder');
+
+
 		$doc = Factory::getDocument();
 		$doc->addStyleDeclaration("
-			.webtolk-plugin-info{
+			.wt-b24-plugin-info{
 				box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); 
 				padding:1rem; 
-				margin-bottom:2 rem;
+				margin-bottom: 2rem;
+				display:flex;
+				
+			}
+			.plugin-info-img{
+			    margin-right:auto;
+			    max-width: 100%;
+			}
+			.plugin-info-img svg:hover * {
+				cursor:pointer;
 			}
 		");
 
-		$wt_plugin_info = simplexml_load_file(JPATH_SITE."/plugins/system/wt_seo_meta_templates_joomshopping/wt_seo_meta_templates_joomshopping.xml");
+		$wt_plugin_info = simplexml_load_file(JPATH_SITE."/plugins/".$folder."/".$element."/".$element.".xml");
+
 
 
 		?>
-		<div class="media webtolk-plugin-info">
-            <?php if(file_exists(JPATH_SITE.'/plugins/system/wt_seo_meta_templates/img/web_tolk_logo_wide.png')):?>
-			    <img class="media-object pull-left" src="../plugins/system/wt_seo_meta_templates/img/web_tolk_logo_wide.png"/>
-            <?php endif;?>
-			<div class="media-body">
+		<div class="wt-b24-plugin-info">
+            <div class="plugin-info-img span2">
+				<a href="https://web-tolk.ru" target="_blank">
+							<svg width="200" height="50" xmlns="http://www.w3.org/2000/svg">
+								 <g>
+								  <title>Go to https://web-tolk.ru</title>
+								  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="32" id="svg_3" y="36.085949" x="8.152073" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#0fa2e6">Web</text>
+								  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="32" id="svg_4" y="36.081862" x="74.239105" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#384148">Tolk</text>
+								 </g>
+							</svg>
+				</a>
+            </div>
+			<div style="padding: 0px 15px;" class="span10">
 				<span class="label label-success">v.<?php echo $wt_plugin_info->version; ?></span>
-				<?php echo Text::_("PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DESC"); ?>
+				<?php echo Text::_("PLG_".strtoupper($element)."_DESC"); ?>
 			</div>
 		</div>
 <?php
@@ -82,20 +104,5 @@ class JFormFieldPlugininfo extends JFormFieldSpacer
 		return $this->getLabel();
 	}
 
-	/**
-	 * Method to get a control group with label and input.
-	 *
-	 * @param   array  $options  Options to be passed into the rendering of the field
-	 *
-	 * @return  string  A string containing the html for the control group
-	 *
-	 * @since   3.7.3
-	 */
-	public function renderField($options = array())
-	{
-		$options['class'] = empty($options['class']) ? 'field-spacer' : $options['class'] . ' field-spacer';
-
-		return parent::renderField($options);
-	}
 }
 ?>
