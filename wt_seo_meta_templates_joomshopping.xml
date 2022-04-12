@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<extension type="plugin" version="3.9" method="upgrade" group="system">
+<extension type="plugin" version="4.1" method="upgrade" group="system">
     <name>System - WT SEO Meta templates - JoomShopping</name>
     <author>Sergey Tolkachyov</author>
     <authorEmail>info@web-tolk.ru</authorEmail>
     <authorUrl>https://web-tolk.ru/</authorUrl>
-	<creationDate>13/11/2021</creationDate>
+	<creationDate>12/04/2022</creationDate>
     <copyright>Sergey Tolkachyov</copyright>
     <license>GNU General Public License v3.0</license>
-    <version>1.3.0</version>
+    <version>1.4.1</version>
     <description>JoomShopping plugin for WT SEO Meta templates</description>
     <files>
         <filename plugin="wt_seo_meta_templates_joomshopping">wt_seo_meta_templates_joomshopping.php</filename>
@@ -24,8 +24,8 @@
         <fields name="params">
             <fieldset name="basic">
                 <field addfieldpath="plugins/system/wt_seo_meta_templates_joomshopping/fields" type="plugininfo" name="plugininfo"/>
-                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DESCRIPTION"/>
-                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_SHOW_DEBUG_HEADER"/>
+                <field type="note" label="INFO" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DESCRIPTION"/>
+                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_SHOW_DEBUG_HEADER"/>
                 <field type="radio"
                        name="show_debug"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_SHOW_DEBUG"
@@ -36,9 +36,9 @@
                 </field>
             </fieldset>
             <fieldset name="JOOMSHOPPING_CATEGORIES">
-                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CATEGORIES_HEADER"/>
-                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_CATEGORY_VARIABLES"/>
-                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CATEGORIES_TITLE_HEADER"/>
+                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CATEGORIES_HEADER"/>
+                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_CATEGORY_VARIABLES"/>
+                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CATEGORIES_TITLE_HEADER"/>
                 <!--                joomshopping Category-->
                 <field type="radio"
                        name="global_jshop_category_title_replace"
@@ -61,7 +61,7 @@
                        name="joomshopping_category_title_template"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_CATEGORY_TITLE_TEMPLATE"
                        rows="3"
-                       class="span8"
+                       class="span8 col-8"
                        showon="global_jshop_category_title_replace:1"/>
                 <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CATEGORIES_META_DESCRIPTION_HEADER"/>
                 <field type="radio"
@@ -85,14 +85,14 @@
                        name="joomshopping_category_meta_description_template"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_CATEGORY_META_DESCRIPTION_TEMPLATE"
                        rows="3"
-                       class="span8"
+                       class="span8 col-8"
                        showon="global_jshop_category_description_replace:1"/>
             </fieldset>
             <fieldset name="JOOMSHOPPING_PRODUCT">
                 <!--                joomshopping Product-->
-                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_HEADER"/>
-                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_PRODUCT_VARIABLES"/>
-                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_TITLE_HEADER"/>
+                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_HEADER"/>
+                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_PRODUCT_VARIABLES"/>
+                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_TITLE_HEADER"/>
                 <field type="radio"
                        name="global_jshop_product_title_replace"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_PRODUCT_TITLE_REPLACE"
@@ -114,7 +114,7 @@
                        name="joomshopping_product_title_template"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_PRODUCT_TITLE_TEMPLATE"
                        rows="3"
-                       class="span8"
+                       class="span8 col-8"
                        showon="global_jshop_product_title_replace:1"/>
                 <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_META_DESCRIPTION_HEADER"/>
                 <field type="radio"
@@ -138,7 +138,7 @@
                        name="joomshopping_product_meta_description_template"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_PRODUCT_META_DESCRIPTION_TEMPLATE"
                        rows="3"
-                       class="span8"
+                       class="span8 col-8"
                        showon="global_jshop_product_meta_description_replace:1"/>
                 <field type="radio"
                        name="replace_zero_price_with_text"
@@ -154,9 +154,9 @@
                        showon="replace_zero_price_with_text:1"/>
             </fieldset>
             <fieldset name="JOOMSHOPPING_MANUFACTURER">
-                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_MANUFACTURER_HEADER"/>
-                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_MANUFACTURER_VARIABLES"/>
-                <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_MANUFACTURER_TITLE_HEADER"/>
+                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_MANUFACTURER_HEADER"/>
+                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_MANUFACTURER_VARIABLES"/>
+                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_MANUFACTURER_TITLE_HEADER"/>
                 <!--                joomshopping Manufacturer product list-->
                 <field type="radio"
                        name="global_manufacturer_title_replace"
@@ -179,7 +179,7 @@
                        name="joomshopping_manufacturer_title_template"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_MANUFACTURER_TITLE_TEMPLATE"
                        rows="3"
-                       class="span8"
+                       class="span8 col-8"
                        showon="global_manufacturer_title_replace:1"/>
                 <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_MANUFACTURER_META_DESCRIPTION_HEADER"/>
                 <field type="radio"
@@ -203,7 +203,7 @@
                        name="joomshopping_manufacturer_meta_description_template"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_MANUFACTURER_META_DESCRIPTION_TEMPLATE"
                        rows="3"
-                       class="span8"
+                       class="span8 col-8"
                        showon="global_manufacturer_description_replace:1"/>
             </fieldset>
             <fieldset name="PAGINATION">
@@ -229,10 +229,13 @@
                        showon="enable_page_title_and_metadesc_pagination_suffix:1"
                        default="WT_SEO_META_TEMPLTATES_PAGIN_META_DESC_SFX"/>
             </fieldset>
+            <fieldset name="custom_varibales">
+                <field type="note" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CUSTOM_VARIBALES_LABEL" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CUSTOM_VARIBALES_DESC"/>
+            </fieldset>
 
         </fields>
     </config>
 	<updateservers>
-        <server type="extension" name="WebTolkUpdateServer">https://web-tolk.ru/component/swjprojects/jupdate.html?element=wt_seo_meta_templates_joomshopping</server>
+        <server type="extension" name="WebTolk - WT SEO Meta templates - JoomShopping">https://web-tolk.ru/component/swjprojects/jupdate.html?element=wt_seo_meta_templates_joomshopping</server>
     </updateservers>
 </extension>

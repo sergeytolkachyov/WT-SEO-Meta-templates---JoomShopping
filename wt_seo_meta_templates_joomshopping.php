@@ -2,34 +2,56 @@
 /**
  * @package     WT SEO Meta Templates
  * @subpackage  WT SEO Meta Templates - JoomShopping
- * @version     1.3.0
+ * @version     1.4.1
  * @Author      Sergey Tolkachyov, https://web-tolk.ru
  * @copyright   Copyright (C) 2020 Sergey Tolkachyov
- * @license     GNU/GPL http://www.gnu.org/licenses/gpl-2.0.html
+ * @license     GNU General Public License v3.0
  * @since       1.0
  */
 // No direct access
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Profiler\Profiler;
 use Joomla\CMS\Pagination\Pagination;
+use Joomla\CMS\Version;
 
 class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 {
-
-	public function __construct(&$subject, $config)
-	{
-
-		parent::__construct($subject, $config);
-		$this->loadLanguage();
-	}
+	protected $autoloadLanguage = true;
 
 	public function onWt_seo_meta_templatesAddVariables()
 	{
+
+		$jversion = new Version();
+		if (version_compare($jversion->getShortVersion(), '4.0', '<'))
+		{
+			// only for Joomla 3.x
+			$isJoomla4 = false;
+		}
+		else
+		{
+			// Joomla 4
+			$isJoomla4 = true;
+		}
+
+
+		// Load JoomShopping config and models
+		if (!class_exists('\JSFactory') && $isJoomla4 == false)
+		{
+			if ($isJoomla4 == false)
+			{
+				JLoader::register('\JSFactory', JPATH_SITE . '/components/com_jshopping/lib/factory.php');
+			}
+		}
+		if (!class_exists('\JSHelper') && $isJoomla4 == true)
+		{
+			JLoader::register('\JSFactory', JPATH_SITE . '/components/com_jshopping/bootstrap.php');
+		}
 
 
 		!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: start');
@@ -40,11 +62,6 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 			$lang         = Factory::getLanguage();
 			$current_lang = $lang->getTag();
 
-			// Load JoomShopping config and models
-			if (!class_exists('JSFactory'))
-			{
-				require_once(JPATH_SITE . '/components/com_jshopping/lib/factory.php');
-			}
 			!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: After load JoomShopping config');
 
 			$variables = array();
@@ -54,7 +71,15 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				$category_id = $app->input->getInt('category_id');
 
 				!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: Before load JoomShopping category');
-				$jshop_category = JSFactory::getTable('category', 'jshop');
+				if ($isJoomla4 == true)
+				{
+					$jshop_category = JSFactory::getTable('category', 'jshop');
+				}
+				else
+				{
+					$jshop_category = JSFactory::getTable('category', 'jshop');
+				}
+
 				$jshop_category->load($category_id);
 
 				!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: After load JoomShopping category');
@@ -64,7 +89,14 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				 * JoomShopping category variables for short codes
 				 */
 				//JoomShopping category name
-				$lang             = JSFactory::getLang();
+				if ($isJoomla4 == true)
+				{
+					$lang = JSFactory::getLang();
+				}
+				else
+				{
+					$lang = JSFactory::getLang();
+				}
 				$name             = $lang->get('name');
 				$title            = $lang->get('meta_title');
 				$meta_description = $lang->get('meta_description');
@@ -79,7 +111,17 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 					'value'    => $jshop_category->category_id,
 				];
 
-				$category_count_products = $jshop_category->getCountProducts('');
+				if ($isJoomla4 == false)
+				{
+					$category_count_products = $jshop_category->getCountProducts('');
+				}
+				else
+				{
+					$productlist = \JSFactory::getModel('category', 'Site\\Productlist');
+					$productlist->setTable($jshop_category);
+					$productlist->load();
+					$category_count_products = $productlist->getTotal();
+				}
 				//JoomShopping category id
 				$variables[] = [
 					'variable' => 'JSHOP_CATEGORY_COUNT_PRODUCTS',
@@ -94,9 +136,8 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				 */
 				if ($this->params->get('show_debug') == 1)
 				{
-					echo '<h4>WT SEO Meta templates - JoomShopping provider plugin debug</h4>';
-					echo '<p><strong>JoomShopping Title</strong>: ' . $jshop_category->$title . '</p>';
-					echo '<p><strong>JoomShopping Meta desc:</strong> ' . $jshop_category->$meta_description . '</p>';
+					$this->prepareDebugInfo('JoomShopping Title', '<p>' . $jshop_category->$title . '</p>');
+					$this->prepareDebugInfo('JoomShopping Meta desc', '<p>' . $jshop_category->$meta_description . '</p>');
 				}
 				if ($this->params->get('global_jshop_category_title_replace') == 1)
 				{
@@ -110,13 +151,13 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 					{
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_CATEGORY_TITLE_REPLACE_ONLY_EMPTY');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_CATEGORY_TITLE_REPLACE_ONLY_EMPTY') . '</p>');
 						}
 						if (empty($jshop_category->$title) == true)
 						{
 							if ($this->params->get('show_debug') == 1)
 							{
-								echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_TITLE_FOUND');
+								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_TITLE_FOUND') . '</p>');
 							}
 							$title_template             = $this->params->get('joomshopping_category_title_template');
 							$seo_meta_template['title'] = $title_template;
@@ -127,7 +168,7 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 						//Переписываем все глобально
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_CATEGORY_TITLE_REPLACE');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_CATEGORY_TITLE_REPLACE') . '</p>');
 						}
 						$title_template             = $this->params->get('joomshopping_category_title_template');
 						$seo_meta_template['title'] = $title_template;
@@ -151,14 +192,14 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 					{
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_CATEGORY_META_DESCRIPTION_REPLACE_ONLY_EMPTY');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_CATEGORY_META_DESCRIPTION_REPLACE_ONLY_EMPTY') . '</p>');
 						}
 
 						if (empty($jshop_category->$meta_description) == true)
 						{
 							if ($this->params->get('show_debug') == 1)
 							{
-								echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_META_DESCRIPTION_FOUND');
+								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_META_DESCRIPTION_FOUND') . '</p>');
 							}
 							$description_template             = $this->params->get('joomshopping_category_meta_description_template');
 							$seo_meta_template['description'] = $description_template;
@@ -169,7 +210,7 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 						//Переписываем все глобально
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_CATEGORY_META_DESCRIPTION_REPLACE');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_CATEGORY_META_DESCRIPTION_REPLACE') . '</p>');
 						}
 						$description_template             = $this->params->get('joomshopping_category_meta_description_template');
 						$seo_meta_template['description'] = $description_template;
@@ -190,9 +231,23 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 					if ($this->params->get('enable_page_title_and_metadesc_pagination_suffix') == 1)
 					{
 						//Всего товаров в категории
-						$total_jshop_category_products = $jshop_category->getCountProducts('');
+
+						if ($isJoomla4 == false)
+						{
+							$total_jshop_category_products = $jshop_category->getCountProducts('');
+							$products_per_page           = $jshop_category->getCountProductsPerPage();
+						}
+						else
+						{
+							$productlist = \JSFactory::getModel('category', 'Site\\Productlist');
+							$productlist->setTable($jshop_category);
+							$productlist->load();
+							$total_jshop_category_products = $productlist->getTotal();
+							$products_per_page           = $productlist->getCountProductsPerPage();
+						}
+
 						//Товаров на странице из настроек категории
-						$products_per_page           = $jshop_category->getCountProductsPerPage();
+
 						$pagination                  = new Pagination($total_jshop_category_products, $limitstart, $products_per_page);
 						$current_pagination_page_num = $pagination->pagesCurrent;
 
@@ -253,17 +308,30 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 			elseif ($app->input->get('controller') == 'product' && $app->input->get('task') == 'view')
 			{
 				//JoomShopping functions include. For priceformat
-				require_once(JPATH_SITE . '/components/com_jshopping/lib/functions.php');
+//				require_once(JPATH_SITE . '/components/com_jshopping/lib/functions.php');
 				!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: Before load JoomShopping product');
 				$product_id = $app->input->getInt('product_id');
 				!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: After load JoomShopping product');
 
 				$category_id   = $app->input->getInt('category_id');
-				$jshop_product = JSFactory::getTable('product', 'jshop');
+				if($isJoomla4 == false){
+					$jshop_product = JSFactory::getTable('product', 'jshop');
+				} else {
+					$jshop_product = \JSFactory::getTable('product', 'jshop');
+				}
+
 				$jshop_product->load($product_id);
-				$jshop_category = JSFactory::getTable('category', 'jshop');
+				if($isJoomla4 == false)
+				{
+					$jshop_category = JSFactory::getTable('category', 'jshop');
+				} else {
+					$jshop_category = \JSFactory::getTable('category', 'jshop');
+				}
 				$jshop_category->load($category_id);
 				!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: After load JoomShopping product category');
+
+
+
 
 				/*
 				 * JoomShopping category variables for short codes
@@ -292,9 +360,19 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				];
 
 				//JoomShopping product old price
+
+				if ($isJoomla4 == false)
+				{
+					$old_price = formatprice($jshop_product->product_old_price);
+				}
+				else
+				{
+					$old_price = \JSHelper::formatprice($jshop_product->product_old_price);
+				}
+
 				$variables[] = [
 					'variable' => 'JSHOP_PRODUCT_OLD_PRICE',
-					'value'    => formatprice($jshop_product->product_old_price),
+					'value'    => $old_price,
 				];
 
 				//If we have a product's zero price we can replace digits with text
@@ -304,7 +382,14 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				}
 				else
 				{
-					$jshop_product_price = formatprice($jshop_product->product_price);
+					if ($isJoomla4 == false)
+					{
+						$jshop_product_price = formatprice($jshop_product->product_price);
+					}
+					else
+					{
+						$jshop_product_price = \JSHelper::formatprice($jshop_product->product_price);
+					}
 				}
 
 				//JoomShopping product price
@@ -320,7 +405,15 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				}
 				else
 				{
-					$jshop_product_minprice = formatprice($jshop_product->min_price);
+					if ($isJoomla4 == false)
+					{
+						$jshop_product_minprice = formatprice($jshop_product->min_price);
+					}
+					else
+					{
+						$jshop_product_minprice = \JSHelper::formatprice($jshop_product->min_price);
+					}
+
 				}
 
 				//JoomShopping product min price
@@ -342,9 +435,18 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				];
 
 				//JoomShopping product weight
+
+				if ($isJoomla4 == false)
+				{
+					$jshop_product_weight = formatweight($jshop_product->product_weight);
+				}
+				else
+				{
+					$jshop_product_weight = \JSHelper::formatweight($jshop_product->product_weight);
+				}
 				$variables[] = [
 					'variable' => 'JSHOP_PRODUCT_WEIGHT',
-					'value'    => formatweight($jshop_product->product_weight),
+					'value'    => $jshop_product_weight,
 				];
 
 				//JoomShopping product rating
@@ -371,13 +473,13 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 					{
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_PRODUCT_TITLE_REPLACE_ONLY_EMPTY');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_PRODUCT_TITLE_REPLACE_ONLY_EMPTY') . '</p>');
 						}
 						if (empty($jshop_product->{'meta_title_' . $current_lang}) == true)
 						{
 							if ($this->params->get('show_debug') == 1)
 							{
-								echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_PRODUCT_TITLE_FOUND');
+								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_PRODUCT_TITLE_FOUND') . '</p>');
 							}
 							$title_template             = $this->params->get('joomshopping_product_title_template');
 							$seo_meta_template['title'] = $title_template;
@@ -388,7 +490,7 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 						//Переписываем все глобально
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_PRODUCT_TITLE_REPLACE');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_PRODUCT_TITLE_REPLACE') . '</p>');
 						}
 						$title_template             = $this->params->get('joomshopping_product_title_template');
 						$seo_meta_template['title'] = $title_template;
@@ -411,14 +513,14 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 					{
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_PRODUCT_META_DESCRIPTION_REPLACE_ONLY_EMPTY');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_PRODUCT_META_DESCRIPTION_REPLACE_ONLY_EMPTY') . '</p>');
 						}
 
 						if (empty($jshop_product->{'meta_description_' . $current_lang}) == true)
 						{
 							if ($this->params->get('show_debug') == 1)
 							{
-								echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_PRODUCT_META_DESCRIPTION_FOUND');
+								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_PRODUCT_META_DESCRIPTION_FOUND') . '</p>');
 							}
 							$description_template             = $this->params->get('joomshopping_product_meta_description_template');
 							$seo_meta_template['description'] = $description_template;
@@ -429,7 +531,7 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 						//Переписываем все глобально
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_PRODUCT_META_DESCRIPTION_REPLACE');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_PRODUCT_META_DESCRIPTION_REPLACE') . '</p>');
 						}
 						$description_template             = $this->params->get('joomshopping_product_meta_description_template');
 						$seo_meta_template['description'] = $description_template;
@@ -446,7 +548,15 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				$manufacturer_id = $app->input->getInt('manufacturer_id');
 
 				!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: Before load JoomShopping manufacturer product list');
-				$manufacturer = JSFactory::getTable('manufacturer', 'jshop');
+				if ($isJoomla4 == false)
+				{
+					$manufacturer = JSFactory::getTable('manufacturer', 'jshop');
+				}
+				else
+				{
+					$manufacturer = JSFactory::getTable('manufacturer', 'jshop');
+				}
+
 				$manufacturer->load($manufacturer_id);
 				!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: After load JoomShopping manufacturer product list');
 
@@ -464,11 +574,25 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 					'value'    => $manufacturer->$name,
 				];
 				//JoomShopping category id
-				$variables[]        = [
+				$variables[] = [
 					'variable' => 'JSHOP_MFG_ID',
 					'value'    => $manufacturer_id,
 				];
-				$mfg_count_products = $manufacturer->getCountProducts('');
+
+
+
+				if ($isJoomla4 == false)
+				{
+					$mfg_count_products = $manufacturer->getCountProducts('');
+				}
+				else
+				{
+					$productlist = \JSFactory::getModel('manufacturer', 'Site\\Productlist');
+					$productlist->setTable($manufacturer);
+					$productlist->load();
+					$mfg_count_products = $productlist->getTotal();
+				}
+
 				//JoomShopping category id
 				$variables[] = [
 					'variable' => 'JSHOP_MFG_COUNT_PRODUCTS',
@@ -483,9 +607,9 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				 */
 				if ($this->params->get('show_debug') == 1)
 				{
-					echo '<h4>WT SEO Meta templates - JoomShopping provider plugin debug</h4>';
-					echo '<p><strong>JoomShopping Title</strong>: ' . $manufacturer->$title . '</p>';
-					echo '<p><strong>JoomShopping Meta desc:</strong> ' . $manufacturer->$meta_description . '</p>';
+					$this->prepareDebugInfo('JoomShopping Title', '<p>' . $manufacturer->$title . '</p>');
+					$this->prepareDebugInfo('JoomShopping Meta desc', '<p>' . $manufacturer->$meta_description . '</p>');
+
 				}
 				if ($this->params->get('global_manufacturer_title_replace') == 1)
 				{
@@ -499,13 +623,13 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 					{
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_MANUFACTURER_TITLE_REPLACE_ONLY_EMPTY');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_MANUFACTURER_TITLE_REPLACE_ONLY_EMPTY') . '</p>');
 						}
 						if (empty($manufacturer->$title) == true)
 						{
 							if ($this->params->get('show_debug') == 1)
 							{
-								echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_TITLE_FOUND');
+								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_TITLE_FOUND') . '</p>');
 							}
 							$title_template             = $this->params->get('joomshopping_manufacturer_title_template');
 							$seo_meta_template['title'] = $title_template;
@@ -516,7 +640,7 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 						//Переписываем все глобально
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_MANUFACTURER_TITLE_REPLACE');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_MANUFACTURER_TITLE_REPLACE') . '</p>');
 						}
 						$title_template             = $this->params->get('joomshopping_manufacturer_title_template');
 						$seo_meta_template['title'] = $title_template;
@@ -540,14 +664,14 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 					{
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_MANUFACTURER_META_DESCRIPTION_REPLACE_ONLY_EMPTY');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_MANUFACTURER_META_DESCRIPTION_REPLACE_ONLY_EMPTY') . '</p>');
 						}
 
 						if (empty($manufacturer->$meta_description) == true)
 						{
 							if ($this->params->get('show_debug') == 1)
 							{
-								echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_META_DESCRIPTION_FOUND');
+								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_META_DESCRIPTION_FOUND') . '</p>');
 							}
 							$description_template             = $this->params->get('joomshopping_manufacturer_meta_description_template');
 							$seo_meta_template['description'] = $description_template;
@@ -558,7 +682,7 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 						//Переписываем все глобально
 						if ($this->params->get('show_debug') == 1)
 						{
-							echo Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_MANUFACTURER_META_DESCRIPTION_REPLACE');
+							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_MANUFACTURER_META_DESCRIPTION_REPLACE') . '</p>');
 						}
 						$description_template             = $this->params->get('joomshopping_manufacturer_meta_description_template');
 						$seo_meta_template['description'] = $description_template;
@@ -578,9 +702,21 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 					if ($this->params->get('enable_page_title_and_metadesc_pagination_suffix') == 1)
 					{
 						//Всего товаров в категории
-						$total_manufacturer_products = $manufacturer->getCountProducts('');
+						if ($isJoomla4 == false)
+						{
+							$total_manufacturer_products = $manufacturer->getCountProducts('');
+							$products_per_page           = $manufacturer->getCountProductsPerPage();
+						}
+						else
+						{
+							$productlist = \JSFactory::getModel('manufacturer', 'Site\\Productlist');
+							$productlist->setTable($manufacturer);
+							$productlist->load();
+							$total_manufacturer_products = $productlist->getTotal();
+							$products_per_page           = $productlist->getCountProductsPerPage();
+						}
 						//Товаров на странице из настроек категории
-						$products_per_page           = $manufacturer->getCountProductsPerPage();
+
 						$pagination                  = new Pagination($total_manufacturer_products, $limitstart, $products_per_page);
 						$current_pagination_page_num = $pagination->pagesCurrent;
 
@@ -621,21 +757,89 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 			}
 
 
+			/**
+			 * Include files with custom SEO variables and overrides from
+			 * plugins/system/wt_seo_meta_templates_joomshopping/customvariables
+			 */
+			if (Folder::exists(__DIR__ . '/customvariables'))
+			{
+				$custom_variables = Folder::files(__DIR__ . '/customvariables');
+				if ($this->params->get('show_debug') == 1)
+				{
+					$this->prepareDebugInfo('Custom variables folder found', __DIR__ . '/customvariables');
+					$this->prepareDebugInfo('Custom variables files found (' . count($custom_variables) . ')', $custom_variables);
+				}
+				foreach ($custom_variables as $custom_variable)
+				{
+					require_once(__DIR__ . '/customvariables/' . $custom_variable);
+				}
+
+			}
+
 			$data = array(
 				'variables'          => $variables,
 				'seo_tags_templates' => $seo_meta_template,
 			);
 
 
+			!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: Before return data. End.');
+
+			$this->prepareDebugInfo('SEO variables', $data);
+
 			if ($this->params->get('show_debug') == 1)
 			{
-				echo '<details><summary><strong>$data array sends to WT SEO Meta templates plugin</strong></summary><pre>';
-				print_r($data);
-				echo '</pre></details><br/>';
+				$session    = Factory::getSession();
+				$debug_info = $session->get("wtseometatemplatesdebugoutput");
+
+				echo "<details style='border:1px solid #0FA2E6; margin-bottom:5px; padding:10px;'>";
+				echo "<summary style='background-color:#384148; color:#fff; padding:10px;'>WT SEO Meta templates debug information</summary>";
+				echo $debug_info;
+				echo '</details>';
+				$session->clear("wtseometatemplatesdebugoutput");
+
 			}
-			!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: Before return data. End.');
 
 			return $data;
 		}//if($option == 'com_jshopping')
+	}
+
+	/**
+	 * Prepare html output for debug info from main function
+	 *
+	 * @param $debug_section_header string
+	 * @param $debug_data           string|array
+	 *
+	 * @return void
+	 * @since 1.4.0
+	 */
+	private function prepareDebugInfo($debug_section_header, $debug_data): void
+	{
+		if ($this->params->get('show_debug') == 1)
+		{
+			$session      = Factory::getSession();
+			$debug_output = $session->get("wtseometatemplatesdebugoutput");
+			if (!empty($debug_section_header))
+			{
+				$debug_output .= "<details style='border:1px solid #0FA2E6; margin-bottom:5px;'>";
+				$debug_output .= "<summary style='background-color:#384148; color:#fff; padding:10px;'>" . $debug_section_header . "</summary>";
+			}
+
+			if (is_array($debug_data) || is_object($debug_data))
+			{
+				$debug_data   = print_r($debug_data, true);
+				$debug_output .= "<pre style='background-color: #eee; padding:10px;'>";
+			}
+
+			$debug_output .= $debug_data;
+			if (is_array($debug_data) || is_object($debug_data))
+			{
+				$debug_output .= "</pre>";
+			}
+			if (!empty($debug_section_header))
+			{
+				$debug_output .= "</details>";
+			}
+			$session->set("wtseometatemplatesdebugoutput", $debug_output);
+		}
 	}
 }//plgSystemWt_seo_meta_templates_joomshopping
