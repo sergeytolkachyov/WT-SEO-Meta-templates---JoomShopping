@@ -1,18 +1,19 @@
 <?xml version="1.0"?>
-<extension type="plugin" version="4.1" method="upgrade" group="system">
+<extension type="plugin" method="upgrade" group="system">
     <name>System - WT SEO Meta templates - JoomShopping</name>
     <author>Sergey Tolkachyov</author>
     <authorEmail>info@web-tolk.ru</authorEmail>
     <authorUrl>https://web-tolk.ru/</authorUrl>
-	<creationDate>12/04/2022</creationDate>
+	<creationDate>07/12/2022</creationDate>
     <copyright>Sergey Tolkachyov</copyright>
     <license>GNU General Public License v3.0</license>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
     <description>JoomShopping plugin for WT SEO Meta templates</description>
     <files>
         <filename plugin="wt_seo_meta_templates_joomshopping">wt_seo_meta_templates_joomshopping.php</filename>
         <folder>language</folder>
         <folder>fields</folder>
+        <folder>subform</folder>
     </files>
 	<languages folder="language" client="administrator">
         <language tag="en-GB">en-GB/en-GB.plg_system_wt_seo_meta_templates_joomshopping.ini</language>
@@ -152,6 +153,17 @@
                        name="zero_price_replace_text"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_ZERO_PRICE_REPLACE_TEXT"
                        showon="replace_zero_price_with_text:1"/>
+            </fieldset>
+            <fieldset name="custom_template_for_products_in_specified_category" label="CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_FIELDSET_LABEL" description="CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_FIELDSET_DESC">
+                <field name="custom_templates_for_products_in_specified_category"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY"
+                       type="subform"
+                       layout="joomla.form.field.subform.repeatable-table"
+                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/subform/custom_template_for_products_in_specified_category.xml"
+                       multiple="true"
+                       parentclass="stack"
+                       buttons="add,remove"
+                />
             </fieldset>
             <fieldset name="JOOMSHOPPING_MANUFACTURER">
                 <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_MANUFACTURER_HEADER"/>
