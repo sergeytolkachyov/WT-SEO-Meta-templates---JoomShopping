@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<field type="textarea"
+		   name="metadesc"
+		   class="w-100"
+		   rows="3"
+		   label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CUSTOM_TEMPLATES_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_METADESC"/>
+	<field name="template_lang"
+		   type="language"
+		   client="site"
+		   default="en-GB"
+		   label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CUSTOM_TEMPLATES_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_LANG" />
+</form>

@@ -48,7 +48,7 @@ class JFormFieldPlugininfo extends JFormFieldSpacer
 		$folder = 	$data->get('folder');
 
 
-		$doc = Factory::getDocument();
+		$doc = Factory::getApplication()->getDocument();
 		$doc->addStyleDeclaration("
 			.wt-b24-plugin-info{
 				box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); 
@@ -84,7 +84,7 @@ class JFormFieldPlugininfo extends JFormFieldSpacer
 				</a>
             </div>
 			<div style="padding: 0px 15px;" class="span10 col-10">
-				<span class="label label-success">v.<?php echo $wt_plugin_info->version; ?></span>
+				<span class="badge badge-success bg-success">v.<?php echo $wt_plugin_info->version; ?></span>
 				<?php echo Text::_("PLG_".strtoupper($element)."_DESC"); ?>
 			</div>
 		</div>
