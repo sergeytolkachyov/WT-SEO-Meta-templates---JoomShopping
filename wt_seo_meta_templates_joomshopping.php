@@ -484,6 +484,12 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 					'variable' => 'JSHOP_PRODUCT_CATEGORY_NAME',
 					'value'    => $jshop_category->{'name_' . $current_lang},
 				];
+				
+				//JoomShopping product category short description
+				$variables[] = [
+					'variable' => 'JSHOP_SHORT_CATEGORY_DESCRIPTION',
+					'value'    => $jshop_category->{'short_description_' . $current_lang},
+				];
 
 				//JoomShopping product weight
 
@@ -510,6 +516,13 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				$variables[] = [
 					'variable' => 'JSHOP_PRODUCT_HITS',
 					'value'    => $jshop_product->hits,
+				];
+				
+				//JoomShopping product short description
+
+				$variables[] = [
+					'variable' => 'JSHOP_SHORT_ITEM_DESCRIPTION',
+					'value'    => $jshop_product->{'short_description_' . $current_lang},
 				];
 
 
