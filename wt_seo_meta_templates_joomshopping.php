@@ -2,7 +2,7 @@
 /**
  * @package     WT SEO Meta Templates
  * @subpackage  WT SEO Meta Templates - JoomShopping
- * @version     1.4.2
+ * @version     1.5.1
  * @Author      Sergey Tolkachyov, https://web-tolk.ru
  * @copyright   Copyright (C) 2020 Sergey Tolkachyov
  * @license     GNU General Public License v3.0
@@ -408,6 +408,31 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				$variables[] = [
 					'variable' => 'JSHOP_PRODUCT_QTY',
 					'value'    => $jshop_product->product_quantity,
+				];
+
+				//JoomShopping product short description
+
+				if (!empty($jshop_product->{'short_description_' . $current_lang}))
+				{
+					(int) $product_short_desc_max_lenght = $this->params->get('product_short_desc_max_chars', 160);
+
+					$product_short_desc = trim(strip_tags(html_entity_decode($jshop_product->{'short_description_' . $current_lang}, ENT_QUOTES, 'UTF-8')));
+					$product_short_desc = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '   '), ' ', $product_short_desc);
+					if ($product_short_desc_max_lenght > 3)
+					{
+						$product_short_desc_max_lenght = $product_short_desc_max_lenght - 3; // For '...' in the end of string
+					}
+					$product_short_desc = mb_substr($product_short_desc, 0, $product_short_desc_max_lenght, 'utf-8');
+					$product_short_desc = $product_short_desc . '...';
+
+				}
+				else
+				{
+					$product_short_desc = '';
+				}
+				$variables[] = [
+					'variable' => 'JSHOP_PRODUCT_SHORT_DESC',
+					'value'    => $product_short_desc,
 				];
 
 				//JoomShopping product old price

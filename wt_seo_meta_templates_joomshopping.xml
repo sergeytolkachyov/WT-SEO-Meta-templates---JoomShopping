@@ -4,10 +4,10 @@
     <author>Sergey Tolkachyov</author>
     <authorEmail>info@web-tolk.ru</authorEmail>
     <authorUrl>https://web-tolk.ru/</authorUrl>
-	<creationDate>09/12/2022</creationDate>
+	<creationDate>10/02/2023</creationDate>
     <copyright>Sergey Tolkachyov</copyright>
     <license>GNU General Public License v3.0</license>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
     <description>JoomShopping plugin for WT SEO Meta templates</description>
     <files>
         <filename plugin="wt_seo_meta_templates_joomshopping">wt_seo_meta_templates_joomshopping.php</filename>
@@ -49,6 +49,7 @@
                        name="global_jshop_category_title_replace"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_CATEGORY_TITLE_REPLACE"
                        class="btn-group btn-group-yesno"
+                       parentclass="stack span-3-inline"
                        default="0">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -57,6 +58,7 @@
                        name="global_jshop_category_title_replace_only_empty"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_CATEGORY_TITLE_REPLACE_ONLY_EMPTY"
                        class="btn-group btn-group-yesno"
+                       parentclass="stack span-3-inline border border-warning p-3"
                        default="0"
                        showon="global_jshop_category_title_replace:1">
                     <option value="1">JYES</option>
@@ -95,6 +97,7 @@
                        name="global_jshop_category_description_replace"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_CATEGORY_DESCRIPTION_REPLACE"
                        class="btn-group btn-group-yesno"
+                       parentclass="stack span-3-inline"
                        default="0">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -103,6 +106,7 @@
                        name="global_jshop_category_description_replace_only_empty"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_CATEGORY_DESCRIPTION_REPLACE_ONLY_EMPTY"
                        class="btn-group btn-group-yesno"
+                       parentclass="stack span-3-inline border border-warning p-3"
                        default="0"
                        showon="global_jshop_category_description_replace:1">
                     <option value="1">JYES</option>
@@ -138,13 +142,22 @@
             </fieldset>
             <fieldset name="JOOMSHOPPING_PRODUCT">
                 <!--                joomshopping Product-->
-                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_HEADER"/>
-                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_PRODUCT_VARIABLES"/>
-                <field type="note" description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_TITLE_HEADER"/>
+                <field type="note"
+                       description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_HEADER"/>
+                <field type="note"
+                       description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JOOMSHOPPING_PRODUCT_VARIABLES"/>
+                <field type="text"
+                       name="product_short_desc_max_chars"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_SHORT_DESC_MAX_CHARS"
+                       filter="int"
+                       default="160"/>
+                <field type="note"
+                       description="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_TITLE_HEADER"/>
                 <field type="radio"
                        name="global_jshop_product_title_replace"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_PRODUCT_TITLE_REPLACE"
                        class="btn-group btn-group-yesno"
+                       parentclass="stack span-3-inline"
                        default="0">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -154,6 +167,7 @@
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_PRODUCT_TITLE_REPLACE_ONLY_EMPTY"
                        class="btn-group btn-group-yesno"
                        default="0"
+                       parentclass="stack span-3-inline border border-warning p-3"
                        showon="global_jshop_product_title_replace:1">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -169,6 +183,7 @@
                        name="global_jshop_product_meta_description_replace"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_PRODUCT_META_DESCRIPTION_REPLACE"
                        class="btn-group btn-group-yesno"
+                       parentclass="stack span-3-inline"
                        default="0">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -177,6 +192,7 @@
                        name="global_jshop_product_meta_description_replace_only_empty"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_PRODUCT_META_DESCRIPTION_REPLACE_ONLY_EMPTY"
                        class="btn-group btn-group-yesno"
+                       parentclass="stack span-3-inline border border-warning p-3"
                        default="0"
                        showon="global_jshop_product_meta_description_replace:1">
                     <option value="1">JYES</option>
@@ -226,6 +242,7 @@
                        name="global_manufacturer_title_replace"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_MANUFACTURER_TITLE_REPLACE"
                        class="btn-group btn-group-yesno"
+                       parentclass="stack span-3-inline"
                        default="0">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -234,6 +251,7 @@
                        name="global_manufacturer_title_replace_only_empty"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_MANUFACTURER_TITLE_REPLACE_ONLY_EMPTY"
                        class="btn-group btn-group-yesno"
+                       parentclass="stack span-3-inline border border-warning p-3"
                        default="0"
                        showon="global_manufacturer_title_replace:1">
                     <option value="1">JYES</option>
@@ -270,6 +288,7 @@
                        name="global_manufacturer_description_replace"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_MANUFACTURER_DESCRIPTION_REPLACE"
                        class="btn-group btn-group-yesno"
+                       parentclass="stack span-3-inline"
                        default="0">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -278,6 +297,7 @@
                        name="global_manufacturer_description_replace_only_empty"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_GLOBAL_MANUFACTURER_DESCRIPTION_REPLACE_ONLY_EMPTY"
                        class="btn-group btn-group-yesno"
+                       parentclass="stack span-3-inline border border-warning p-3"
                        default="0"
                        showon="global_manufacturer_description_replace:1">
                     <option value="1">JYES</option>
