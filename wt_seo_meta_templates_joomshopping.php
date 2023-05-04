@@ -2,7 +2,7 @@
 /**
  * @package     WT SEO Meta Templates
  * @subpackage  WT SEO Meta Templates - JoomShopping
- * @version     1.5.1
+ * @version     1.5.2
  * @Author      Sergey Tolkachyov, https://web-tolk.ru
  * @copyright   Copyright (C) 2020 Sergey Tolkachyov
  * @license     GNU General Public License v3.0
@@ -344,15 +344,16 @@ class plgSystemWt_seo_meta_templates_joomshopping extends CMSPlugin
 				// Перенесли ниже остальных переменных из-за того, что вызов
 				// родительской категории затирает данные основной
 				// и определение пустых/не пустых значений title и meta-description работает не правильно.
+                $jshop_parent_category_name = "";
 				if ($jshop_category->category_parent_id != 0)
 				{
 					$jshop_category->load($jshop_category->category_parent_id);
 					$jshop_parent_category_name = $jshop_category->$name;
-					$variables[]                = [
-						'variable' => 'JSHOP_PARENT_CATEGORY_NAME',
-						'value'    => $jshop_parent_category_name,
-					];
 				}
+                $variables[]                = [
+                    'variable' => 'JSHOP_PARENT_CATEGORY_NAME',
+                    'value'    => $jshop_parent_category_name,
+                ];
 
 			}
 			// Short codes for JoomShopping product details view

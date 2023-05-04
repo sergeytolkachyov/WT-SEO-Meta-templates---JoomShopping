@@ -4,10 +4,10 @@
     <author>Sergey Tolkachyov</author>
     <authorEmail>info@web-tolk.ru</authorEmail>
     <authorUrl>https://web-tolk.ru/</authorUrl>
-	<creationDate>10/02/2023</creationDate>
+	<creationDate>May 2023</creationDate>
     <copyright>Sergey Tolkachyov</copyright>
     <license>GNU General Public License v3.0</license>
-    <version>1.5.1</version>
+    <version>1.5.2</version>
     <description>JoomShopping plugin for WT SEO Meta templates</description>
     <files>
         <filename plugin="wt_seo_meta_templates_joomshopping">wt_seo_meta_templates_joomshopping.php</filename>

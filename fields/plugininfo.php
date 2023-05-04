@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     WebTolk plugin info field
- * @version     1.0.0
+ * @version     1.5.2
  * @Author 		Sergey Tolkachyov, https://web-tolk.ru
  * @copyright   Copyright (C) 2022 Sergey Tolkachyov
  * @license     GNU/GPL http://www.gnu.org/licenses/gpl-2.0.html
