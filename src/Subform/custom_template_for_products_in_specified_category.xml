@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
 	<field type="jshoppingcategories"
-		   addfieldpath="plugins/system/wt_seo_meta_templates_joomshopping/fields"
+		   addfieldprefix="Joomla\Plugin\System\Wt_seo_meta_templates_joomshopping\Fields"
 		   name="category"
 		   label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CUSTOM_TEMPLATES_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_CATEGORY"/>
 	<field

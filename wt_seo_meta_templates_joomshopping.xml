@@ -4,27 +4,27 @@
     <author>Sergey Tolkachyov</author>
     <authorEmail>info@web-tolk.ru</authorEmail>
     <authorUrl>https://web-tolk.ru/</authorUrl>
-	<creationDate>May 2023</creationDate>
+	<creationDate>November 2023</creationDate>
     <copyright>Sergey Tolkachyov</copyright>
     <license>GNU General Public License v3.0</license>
-    <version>1.5.2</version>
+    <version>2.0.0</version>
     <description>JoomShopping plugin for WT SEO Meta templates</description>
+    <namespace path="src">Joomla\Plugin\System\Wt_seo_meta_templates_joomshopping</namespace>
     <files>
-        <filename plugin="wt_seo_meta_templates_joomshopping">wt_seo_meta_templates_joomshopping.php</filename>
-        <folder>language</folder>
-        <folder>fields</folder>
-        <folder>subform</folder>
+        <folder plugin="wt_seo_meta_templates_joomshopping">src</folder>
+        <folder>services</folder>
+        <filename>wt_seo_meta_templates_joomshopping.xml</filename>
     </files>
 	<languages folder="language" client="administrator">
-        <language tag="en-GB">en-GB/en-GB.plg_system_wt_seo_meta_templates_joomshopping.ini</language>
-        <language tag="ru-RU">ru-RU/ru-RU.plg_system_wt_seo_meta_templates_joomshopping.ini</language>
-        <language tag="en-GB">en-GB/en-GB.plg_system_wt_seo_meta_templates_joomshopping.sys.ini</language>
-        <language tag="ru-RU">ru-RU/ru-RU.plg_system_wt_seo_meta_templates_joomshopping.sys.ini</language>
+        <language tag="en-GB">en-GB/plg_system_wt_seo_meta_templates_joomshopping.ini</language>
+        <language tag="ru-RU">ru-RU/plg_system_wt_seo_meta_templates_joomshopping.ini</language>
+        <language tag="en-GB">en-GB/plg_system_wt_seo_meta_templates_joomshopping.sys.ini</language>
+        <language tag="ru-RU">ru-RU/plg_system_wt_seo_meta_templates_joomshopping.sys.ini</language>
     </languages>
        <config>
         <fields name="params">
             <fieldset name="basic">
-                <field addfieldpath="plugins/system/wt_seo_meta_templates_joomshopping/fields"
+                <field addfieldprefix="Joomla\Plugin\System\Wt_seo_meta_templates_joomshopping\Fields"
                        type="plugininfo" name="plugininfo"/>
                 <field type="note"
                        label="INFO"
@@ -84,7 +84,7 @@
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JSHOP_CATEGORY_TITLE_MULTILANG"
                        type="subform"
                        layout="joomla.form.field.subform.repeatable-table"
-                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/subform/multilang_title_template.xml"
+                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/src/Subform/multilang_title_template.xml"
                        multiple="true"
                        showon="global_jshop_category_title_replace:1[AND]use_jshop_category_title_multilang:1"
                        parentclass="stack"
@@ -132,7 +132,7 @@
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JSHOP_CATEGORY_METADESC_MULTILANG"
                        type="subform"
                        layout="joomla.form.field.subform.repeatable-table"
-                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/subform/multilang_metadesc_template.xml"
+                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/src/Subform/multilang_metadesc_template.xml"
                        multiple="true"
                        showon="global_jshop_category_description_replace:1[AND]use_jshop_category_metadesc_multilang:1"
                        parentclass="stack"
@@ -224,7 +224,7 @@
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY"
                        type="subform"
                        layout="joomla.form.field.subform.repeatable-table"
-                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/subform/custom_template_for_products_in_specified_category.xml"
+                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/src/Subform/custom_template_for_products_in_specified_category.xml"
                        multiple="true"
                        parentclass="stack"
                        buttons="add,remove"
@@ -277,7 +277,7 @@
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JSHOP_MANUFACTURER_TITLE_MULTILANG"
                        type="subform"
                        layout="joomla.form.field.subform.repeatable-table"
-                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/subform/multilang_title_template.xml"
+                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/src/Subform/multilang_title_template.xml"
                        multiple="true"
                        showon="global_manufacturer_title_replace:1[AND]use_jshop_manufacturer_title_multilang:1"
                        parentclass="stack"
@@ -323,7 +323,7 @@
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JSHOP_MANUFACTURER_METADESC_MULTILANG"
                        type="subform"
                        layout="joomla.form.field.subform.repeatable-table"
-                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/subform/multilang_metadesc_template.xml"
+                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/src/Subform/multilang_metadesc_template.xml"
                        multiple="true"
                        showon="global_manufacturer_description_replace:1[AND]use_jshop_manufacturer_metadesc_multilang:1"
                        parentclass="stack"
@@ -365,7 +365,8 @@
 
         </fields>
     </config>
-	<updateservers>
-        <server type="extension" name="WebTolk - WT SEO Meta templates - JoomShopping">https://web-tolk.ru/component/swjprojects/jupdate.html?element=wt_seo_meta_templates_joomshopping</server>
+    <updateservers>
+        <server type="extension" priority="1" name="WT SEO Meta templates - JoomShopping updates">https://web-tolk.ru/component/swjprojects/jupdate?element=wt_seo_meta_templates_joomshopping</server>
     </updateservers>
+    <changelogurl>https://web-tolk.ru/jchangelog?element=wt_seo_meta_templates_joomshopping</changelogurl>
 </extension>
