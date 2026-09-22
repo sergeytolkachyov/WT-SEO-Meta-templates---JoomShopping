@@ -2,7 +2,7 @@
 /**
  * @package     WT SEO Meta Templates
  * @subpackage  WT SEO Meta Templates - JoomShopping
- * @version     2.0.0
+ * @version     2.1.0
  * @Author      Sergey Tolkachyov, https://web-tolk.ru
  * @copyright   Copyright (C) 2020 Sergey Tolkachyov
  * @license     GNU General Public License v3.0
@@ -14,13 +14,14 @@ namespace Joomla\Plugin\System\Wt_seo_meta_templates_joomshopping\Extension;
 // No direct access
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Filesystem\Folder;
-use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Profiler\Profiler;
 use Joomla\CMS\Pagination\Pagination;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Profiler\Profiler;
+use Joomla\Component\Jshopping\Site\Helper\Helper;
 use Joomla\Event\SubscriberInterface;
+use Joomla\Filesystem\Folder;
 
 class Wt_seo_meta_templates_joomshopping extends CMSPlugin implements SubscriberInterface
 {
@@ -45,9 +46,9 @@ class Wt_seo_meta_templates_joomshopping extends CMSPlugin implements Subscriber
 	public function onWt_seo_meta_templatesAddVariables($event) : void
 	{
 		// Load JoomShopping config and models
-		if (!class_exists('\JSHelper'))
+		if (!class_exists('Joomla\Component\Jshopping\Site\Helper\Helper'))
 		{
-			\JLoader::register('\JSFactory', JPATH_SITE . '/components/com_jshopping/bootstrap.php');
+			require_once JPATH_SITE . '/components/com_jshopping/bootstrap.php';
 		}
 
 		!JDEBUG ?: Profiler::getInstance('Application')->mark('<strong>plg WT SEO Meta templates - JoomShopping provider plugin</strong>: start');
@@ -412,7 +413,7 @@ class Wt_seo_meta_templates_joomshopping extends CMSPlugin implements Subscriber
 				];
 
 				//JoomShopping product old price
-                $old_price = \JSHelper::formatprice($jshop_product->product_old_price);
+                $old_price = Helper::formatprice($jshop_product->product_old_price);
 
 				$variables[] = [
 					'variable' => 'JSHOP_PRODUCT_OLD_PRICE',
@@ -426,7 +427,7 @@ class Wt_seo_meta_templates_joomshopping extends CMSPlugin implements Subscriber
 				}
 				else
 				{
-					$jshop_product_price = \JSHelper::formatprice($jshop_product->product_price);
+					$jshop_product_price = Helper::formatprice($jshop_product->product_price);
 				}
 
 				//JoomShopping product price
@@ -442,7 +443,7 @@ class Wt_seo_meta_templates_joomshopping extends CMSPlugin implements Subscriber
 				}
 				else
 				{
-                    $jshop_product_minprice = \JSHelper::formatprice($jshop_product->min_price);
+                    $jshop_product_minprice = Helper::formatprice($jshop_product->min_price);
 				}
 
 				//JoomShopping product min price
@@ -464,7 +465,7 @@ class Wt_seo_meta_templates_joomshopping extends CMSPlugin implements Subscriber
 				];
 
 				//JoomShopping product weight
-				$jshop_product_weight = \JSHelper::formatweight($jshop_product->product_weight);
+				$jshop_product_weight = Helper::formatweight($jshop_product->product_weight);
 				$variables[] = [
 					'variable' => 'JSHOP_PRODUCT_WEIGHT',
 					'value'    => $jshop_product_weight,
@@ -487,95 +488,76 @@ class Wt_seo_meta_templates_joomshopping extends CMSPlugin implements Subscriber
 				 * Специфичные сео-формулы для товаров конкретной категории
 				 */
 
-				$custom_templates_for_products_in_specified_category = array();
-				foreach ($this->params->get('custom_templates_for_products_in_specified_category') as $custom_template)
+				$custom_templates_for_products_in_specified_category = [];
+				foreach ((array) $this->params->get('custom_templates_for_products_in_specified_category', []) as $custom_template)
 				{
-					if($current_lang == $custom_template->template_lang && $category_id == $custom_template->category){
-						$custom_templates_for_products_in_specified_category[$custom_template->category]['title']    = $custom_template->title;
-						$custom_templates_for_products_in_specified_category[$custom_template->category]['metadesc'] = $custom_template->metadesc;
-					}elseif ($current_lang == $custom_template->template_lang &&$custom_template->category == 0){
-						// Мультиязычность формул - для "всех" категорий
-						$custom_templates_for_products_in_specified_category['all']['title']    = $custom_template->title;
-						$custom_templates_for_products_in_specified_category['all']['metadesc'] = $custom_template->metadesc;
+					if ($current_lang == $custom_template->template_lang && $category_id == $custom_template->category)
+					{
+						$custom_templates_for_products_in_specified_category[$custom_template->category] = [
+							'title'    => $custom_template->title ?? '',
+							'metadesc' => $custom_template->metadesc ?? '',
+						];
 					}
 				}
 
+				$jshop_product_title_multilang = [];
+				if ($this->params->get('use_jshop_product_title_multilang', 0) == 1 && $this->params->get('jshop_product_title_multilang'))
+				{
+					foreach ($this->params->get('jshop_product_title_multilang') as $multilang_title_seo_template)
+					{
+						$jshop_product_title_multilang[$multilang_title_seo_template->template_lang] = $multilang_title_seo_template->title;
+					}
+				}
+
+				$jshop_product_metadesc_multilang = [];
+				if ($this->params->get('use_jshop_product_metadesc_multilang', 0) == 1 && $this->params->get('jshop_product_metadesc_multilang'))
+				{
+					foreach ($this->params->get('jshop_product_metadesc_multilang') as $multilang_metadesc_seo_template)
+					{
+						$jshop_product_metadesc_multilang[$multilang_metadesc_seo_template->template_lang] = $multilang_metadesc_seo_template->metadesc;
+					}
+				}
+
+				$product_seo_templates = self::mergeProductTemplates(
+					[
+						'title'    => $this->params->get('joomshopping_product_title_template'),
+						'metadesc' => $this->params->get('joomshopping_product_meta_description_template'),
+					],
+					[
+						'title'    => $jshop_product_title_multilang[$current_lang] ?? '',
+						'metadesc' => $jshop_product_metadesc_multilang[$current_lang] ?? '',
+					],
+					$custom_templates_for_products_in_specified_category[$category_id] ?? []
+				);
+
 				if ($this->params->get('global_jshop_product_title_replace') == 1)
 				{
-
-					/**
-					 * Если переписываем только пустые. Там, где пустое
-					 * $jshop_category->{'meta_title_'.$current_lang}
-					 */
-
 					if ($this->params->get('global_jshop_product_title_replace_only_empty') == 1)
 					{
 						if ($this->params->get('show_debug') == 1)
 						{
 							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_PRODUCT_TITLE_REPLACE_ONLY_EMPTY') . '</p>');
 						}
-						if (empty($jshop_product->{'meta_title_' . $current_lang}) == true)
+
+						if (empty($jshop_product->{'meta_title_' . $current_lang}))
 						{
 							if ($this->params->get('show_debug') == 1)
 							{
 								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_PRODUCT_TITLE_FOUND') . '</p>');
 							}
 
-							if (isset($custom_templates_for_products_in_specified_category[$category_id]))
-							{
-								// Специфичная сео-формула для материалов данной категории
-								$title_template = $custom_templates_for_products_in_specified_category[$category_id]['title'];
-								if ($this->params->get('show_debug') == 1)
-								{
-									$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_FOUND') . ' - title</p>');
-								}
-							}elseif(isset($custom_templates_for_products_in_specified_category['all'])){
-								// Специфичная сео-формула для материалов данной категории
-								$title_template = $custom_templates_for_products_in_specified_category['all']['title'];
-								if ($this->params->get('show_debug') == 1)
-								{
-									$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_FOUND') . ' - title</p>');
-								}
-							}
-							else
-							{
-								// Глобальная сео-формула для всех товаров
-								$title_template = $this->params->get('joomshopping_product_title_template');
-							}
-
+							$seo_meta_template['title'] = $product_seo_templates['title'];
 						}
 					}
 					else
 					{
-						//Переписываем все глобально
 						if ($this->params->get('show_debug') == 1)
 						{
 							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_PRODUCT_TITLE_REPLACE') . '</p>');
 						}
 
-						if (isset($custom_templates_for_products_in_specified_category[$category_id]))
-						{
-							// Специфичная сео-формула для материалов данной категории
-							$title_template = $custom_templates_for_products_in_specified_category[$category_id]['title'];
-							if ($this->params->get('show_debug') == 1)
-							{
-								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_FOUND') . ' - title</p>');
-							}
-						}elseif(isset($custom_templates_for_products_in_specified_category['all'])){
-							// Специфичная сео-формула для материалов данной категории
-							$title_template = $custom_templates_for_products_in_specified_category['all']['title'];
-							if ($this->params->get('show_debug') == 1)
-							{
-								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_FOUND') . ' - title</p>');
-							}
-						}
-						else
-						{
-							// Глобальная сео-формула для всех товаров
-							$title_template = $this->params->get('joomshopping_product_title_template');
-						}
+						$seo_meta_template['title'] = $product_seo_templates['title'];
 					}
-					$seo_meta_template['title'] = $title_template;
 				}
 
 				/*
@@ -604,28 +586,7 @@ class Wt_seo_meta_templates_joomshopping extends CMSPlugin implements Subscriber
 								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_EMPTY_PRODUCT_META_DESCRIPTION_FOUND') . '</p>');
 							}
 
-							if (isset($custom_templates_for_products_in_specified_category[$category_id]))
-							{
-								// Специфичная сео-формула для товаров данной категории
-								$description_template = $custom_templates_for_products_in_specified_category[$category_id]['metadesc'];
-								if ($this->params->get('show_debug') == 1)
-								{
-									$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_FOUND') . ' - - meta description</p>');
-								}
-							}elseif(isset($custom_templates_for_products_in_specified_category['all'])){
-								// Специфичная сео-формула для материалов данной категории
-								$description_template = $custom_templates_for_products_in_specified_category['all']['metadesc'];
-								if ($this->params->get('show_debug') == 1)
-								{
-									$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_FOUND') . ' - title</p>');
-								}
-							}
-							else
-							{
-								// Глобальная сео-формула для всех товаров
-								$description_template = $this->params->get('joomshopping_product_meta_description_template');
-							}
-
+							$seo_meta_template['description'] = $product_seo_templates['metadesc'];
 						}
 					}
 					else
@@ -636,31 +597,8 @@ class Wt_seo_meta_templates_joomshopping extends CMSPlugin implements Subscriber
 							$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_GLOBAL_PRODUCT_META_DESCRIPTION_REPLACE') . '</p>');
 						}
 
-						if (isset($custom_templates_for_products_in_specified_category[$category_id]))
-						{
-							// Специфичная сео-формула для товаров данной категории
-							$description_template = $custom_templates_for_products_in_specified_category[$category_id]['metadesc'];
-							if ($this->params->get('show_debug') == 1)
-							{
-								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_FOUND') . ' - - meta description</p>');
-							}
-						}elseif(isset($custom_templates_for_products_in_specified_category['all'])){
-							// Специфичная сео-формула для материалов данной категории
-							$description_template = $custom_templates_for_products_in_specified_category['all']['metadesc'];
-							if ($this->params->get('show_debug') == 1)
-							{
-								$this->prepareDebugInfo('', '<p>' . Text::_('PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_DEBUG_CUSTOM_TEMPLATE_FOR_PRODUCTS_IN_SPECIFIED_CATEGORY_FOUND') . ' - title</p>');
-							}
-						}
-						else
-						{
-							// Глобальная сео-формула для всех товаров
-							$description_template = $this->params->get('joomshopping_product_meta_description_template');
-						}
-
+						$seo_meta_template['description'] = $product_seo_templates['metadesc'];
 					}
-
-					$seo_meta_template['description'] = $description_template;
 				}
 
 
@@ -948,6 +886,37 @@ class Wt_seo_meta_templates_joomshopping extends CMSPlugin implements Subscriber
 
 		    $event->setArgument('result',$data);
 		}
+	}
+
+	/**
+	 * Applies product SEO template layers in ascending precedence, preserving an
+	 * inherited field when the next layer leaves it blank.
+	 *
+	 * @param array ...$templateLayers Template arrays containing title and metadesc.
+	 *
+	 * @return array{title: string, metadesc: string}
+	 *
+	 * @since 2.1.0
+	 */
+	private static function mergeProductTemplates(array ...$templateLayers): array
+	{
+		$templates = [
+			'title'    => '',
+			'metadesc' => '',
+		];
+
+		foreach ($templateLayers as $templateLayer)
+		{
+			$templates = array_replace(
+				$templates,
+				array_filter(
+					$templateLayer,
+					static fn($template): bool => is_string($template) && trim($template) !== ''
+				)
+			);
+		}
+
+		return $templates;
 	}
 
 	/**

@@ -4,15 +4,17 @@
     <author>Sergey Tolkachyov</author>
     <authorEmail>info@web-tolk.ru</authorEmail>
     <authorUrl>https://web-tolk.ru/</authorUrl>
-	<creationDate>November 2023</creationDate>
+	<creationDate>September 2026</creationDate>
     <copyright>Sergey Tolkachyov</copyright>
     <license>GNU General Public License v3.0</license>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
     <description>JoomShopping plugin for WT SEO Meta templates</description>
     <namespace path="src">Joomla\Plugin\System\Wt_seo_meta_templates_joomshopping</namespace>
+    <scriptfile>script.php</scriptfile>
     <files>
         <folder plugin="wt_seo_meta_templates_joomshopping">src</folder>
         <folder>services</folder>
+        <filename>script.php</filename>
         <filename>wt_seo_meta_templates_joomshopping.xml</filename>
     </files>
 	<languages folder="language" client="administrator">
@@ -178,6 +180,25 @@
                        rows="3"
                        class="span8 col-8"
                        showon="global_jshop_product_title_replace:1"/>
+                <field type="radio"
+                       name="use_jshop_product_title_multilang"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_USE_JSHOP_PRODUCT_TITLE_MULTILANG"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       showon="global_jshop_product_title_replace:1">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="jshop_product_title_multilang"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JSHOP_PRODUCT_TITLE_MULTILANG"
+                       type="subform"
+                       layout="joomla.form.field.subform.repeatable-table"
+                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/src/Subform/multilang_title_template.xml"
+                       multiple="true"
+                       showon="global_jshop_product_title_replace:1[AND]use_jshop_product_title_multilang:1"
+                       parentclass="stack"
+                       buttons="add,remove"
+                />
                 <field type="spacer" label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_PRODUCT_META_DESCRIPTION_HEADER"/>
                 <field type="radio"
                        name="global_jshop_product_meta_description_replace"
@@ -204,6 +225,25 @@
                        rows="3"
                        class="span8 col-8"
                        showon="global_jshop_product_meta_description_replace:1"/>
+                <field type="radio"
+                       name="use_jshop_product_metadesc_multilang"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_USE_JSHOP_PRODUCT_METADESC_MULTILANG"
+                       class="btn-group btn-group-yesno"
+                       default="0"
+                       showon="global_jshop_product_meta_description_replace:1">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="jshop_product_metadesc_multilang"
+                       label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_JSHOP_PRODUCT_METADESC_MULTILANG"
+                       type="subform"
+                       layout="joomla.form.field.subform.repeatable-table"
+                       formsource="plugins/system/wt_seo_meta_templates_joomshopping/src/Subform/multilang_metadesc_template.xml"
+                       multiple="true"
+                       showon="global_jshop_product_meta_description_replace:1[AND]use_jshop_product_metadesc_multilang:1"
+                       parentclass="stack"
+                       buttons="add,remove"
+                />
                 <field type="radio"
                        name="replace_zero_price_with_text"
                        label="PLG_WT_SEO_META_TEMPLATES_JOOMSHOPPING_REPLACE_ZERO_PRICE_WITH_TEXT"

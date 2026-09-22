@@ -1,7 +1,7 @@
 <?php
 /**
  * WT Bootstrap image slider
- * @version        2.0.0
+ * @version        2.1.0
  * @package        Bootstrap image slider for Joomla
  * @copyright      Copyright (C) 2023 Sergey Tolkachyov
  * @license        GNU/GPL http://www.gnu.org/licenses/gpl-2.0.html
